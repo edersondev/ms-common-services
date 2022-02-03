@@ -3,6 +3,8 @@ package com.edersondev.mscommonservices.dto.person;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import com.edersondev.mscommonservices.model.entity.Person;
+
 public class PersonDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -19,6 +21,13 @@ public class PersonDTO implements Serializable {
 		this.name = name;
 		this.birthday = birthday;
 		this.gender = gender;
+	}
+	
+	public PersonDTO(Person entity) {
+		id = entity.getId();
+		name = entity.getName();
+		birthday = entity.getBirthday();
+		gender = entity.getGender().getCode();
 	}
 
 	public Long getId() {
