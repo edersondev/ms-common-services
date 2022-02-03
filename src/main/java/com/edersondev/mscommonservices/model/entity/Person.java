@@ -1,5 +1,6 @@
 package com.edersondev.mscommonservices.model.entity;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -27,15 +28,19 @@ public class Person {
 	
 	private Gender gender;
 	
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private Instant createdAt;
+	
 	public Person() {
 		
 	}
 
-	public Person(Long id, String name, LocalDate birthday, Gender gender) {
+	public Person(Long id, String name, LocalDate birthday, Gender gender, Instant createdAt) {
 		this.id = id;
 		this.name = name;
 		this.birthday = birthday;
 		this.gender = gender;
+		this.createdAt = createdAt;
 	}
 
 	public Long getId() {
@@ -68,6 +73,14 @@ public class Person {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
 	}
 	
 }
