@@ -19,6 +19,6 @@ public enum Gender {
 				return value;
 			}
 		}
-		throw new IllegalArgumentException("Invalid gender");
+		return null;
 	}
 }
