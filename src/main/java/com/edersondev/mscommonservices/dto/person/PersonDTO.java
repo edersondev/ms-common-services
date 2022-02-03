@@ -27,7 +27,7 @@ public class PersonDTO implements Serializable {
 		id = entity.getId();
 		name = entity.getName();
 		birthday = entity.getBirthday();
-		gender = entity.getGender().getCode();
+		gender = (entity.getGender() == null ? null : entity.getGender().getCode());
 	}
 
 	public Long getId() {
