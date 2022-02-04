@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.edersondev.mscommonservices.dto.person.PersonCreateDTO;
@@ -19,6 +23,14 @@ public class PersonService {
 
 	@Autowired
 	private PersonRepository repository;
+	
+	public Page<PersonDTO> findAll(Integer pageNo,Integer pageSize,String sortBy,String sortDir) {
+		if(pageSize > 100) { pageSize = 100; }
+		Sort sort = (sortDir.equals("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+		Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+		Page<Person> page = repository.findAll(pageable); 
+		return page.map(entity -> new PersonDTO(entity));
+	}
 	
 	public PersonDTO create(PersonCreateDTO dto) {
 		Person person = this.objFromDTO(dto);

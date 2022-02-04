@@ -6,6 +6,7 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,6 +34,17 @@ public class PersonController {
 
 	@Autowired
 	private PersonService service;
+	
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Page<PersonDTO>> findAll(
+			@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "10") Integer pageSize,
+			@RequestParam(defaultValue = "id") String sortBy,
+			@RequestParam(defaultValue = "asc") String sortDir
+	) {
+		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir);
+		return ResponseEntity.ok(list);
+	}
 	
 	@PostMapping(produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonCreateDTO dto){
