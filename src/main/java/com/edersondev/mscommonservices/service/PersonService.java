@@ -1,5 +1,7 @@
 package com.edersondev.mscommonservices.service;
 
+import java.time.Instant;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,14 @@ public class PersonService {
 	
 	public PersonDTO create(PersonCreateDTO dto) {
 		Person person = this.objFromDTO(dto);
+		person = repository.save(person);
+		return new PersonDTO(person);
+	}
+	
+	public PersonDTO update(Long id, PersonCreateDTO dto) {
+		Person person = this.objFromDTO(dto);
+		person.setId(id);
+		person.setUpdatedAt(Instant.now());
 		person = repository.save(person);
 		return new PersonDTO(person);
 	}
