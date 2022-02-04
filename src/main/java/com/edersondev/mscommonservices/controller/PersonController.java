@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,6 +44,19 @@ public class PersonController {
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody PersonCreateDTO dto){
 		service.update(id, dto);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<PersonDTO> show(@PathVariable Long id) {
+		PersonDTO person = service.show(id);
+		return ResponseEntity.ok().body(person);
+	}
+	
+	@DeleteMapping(value = "/{id}")
+	@ResponseStatus(code = HttpStatus.NO_CONTENT)
+	public ResponseEntity<Void> delete(@PathVariable Long id){
+		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 }
