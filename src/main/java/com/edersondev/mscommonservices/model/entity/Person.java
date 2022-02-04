@@ -26,10 +26,12 @@ public class Person {
 	@Column(nullable = false)
 	private LocalDate birthday;
 	
-	private Gender gender;
+	private Integer gender;
 	
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private Instant createdAt;
+	private Instant createdAt = Instant.now();
+	
+	private Instant updatedAt;
 	
 	public Person() {
 		
@@ -39,7 +41,7 @@ public class Person {
 		this.id = id;
 		this.name = name;
 		this.birthday = birthday;
-		this.gender = gender;
+		setGender(gender);
 		this.createdAt = createdAt;
 	}
 
@@ -68,11 +70,13 @@ public class Person {
 	}
 
 	public Gender getGender() {
-		return gender;
+		return Gender.valueOf(gender);
 	}
 
 	public void setGender(Gender gender) {
-		this.gender = gender;
+		if(gender != null) {
+			this.gender = gender.getCode();			
+		}
 	}
 
 	public Instant getCreatedAt() {
@@ -81,6 +85,14 @@ public class Person {
 
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Instant updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	
 }
