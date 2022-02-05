@@ -48,7 +48,7 @@ public class PersonController {
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonCreateDTO dto){
-		PersonDTO person = service.create(dto);
+		PersonDTO person = new PersonDTO(service.create(dto));
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(person.getId()).toUri();
 		return ResponseEntity.created(uri).body(person);
 	}
@@ -62,7 +62,7 @@ public class PersonController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<PersonDTO> show(@PathVariable Long id) {
-		PersonDTO person = service.show(id);
+		PersonDTO person = new PersonDTO(service.show(id));
 		return ResponseEntity.ok().body(person);
 	}
 	
