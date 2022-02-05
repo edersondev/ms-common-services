@@ -42,11 +42,11 @@ public class PersonController {
 			@RequestParam(defaultValue = "id") String sortBy,
 			@RequestParam(defaultValue = "asc") String sortDir
 	) {
-		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir);
+		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir).map(entity -> new PersonDTO(entity));
 		return ResponseEntity.ok(list);
 	}
 	
-	@PostMapping(produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonCreateDTO dto){
 		PersonDTO person = service.create(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(person.getId()).toUri();
