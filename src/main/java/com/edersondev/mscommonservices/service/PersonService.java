@@ -12,14 +12,13 @@ import com.edersondev.mscommonservices.repository.PersonRepository;
 public class PersonService extends AbstractService<PersonRepository,Person> {
 	
 	public Person create(PersonCreateDTO dto) {
-		Person person = repository.dtoToEntity(dto);
+		Person person = new Person(dto);
 		return repository.save(person);
 	}
 	
 	public void update(Long id, PersonCreateDTO dto) {
 		Person person = this.show(id);
-		person = repository.dtoToEntity(dto);
-		person.setId(id);
+		person.populateObjFromDto(dto);
 		person.setUpdatedAt(Instant.now());
 		repository.save(person);
 	}

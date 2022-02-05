@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.edersondev.mscommonservices.dto.person.PersonCreateDTO;
 import com.edersondev.mscommonservices.model.enums.Gender;
 
 @Entity
@@ -43,6 +44,16 @@ public class Person {
 		this.birthday = birthday;
 		setGender(gender);
 		this.createdAt = createdAt;
+	}
+	
+	public Person(PersonCreateDTO dto) {
+		this.populateObjFromDto(dto);
+	}
+	
+	public void populateObjFromDto(PersonCreateDTO dto) {
+		setName(dto.getName());
+		setBirthday(dto.getBirthday());
+		setGender(Gender.valueOf(dto.getGender()));
 	}
 
 	public Long getId() {
