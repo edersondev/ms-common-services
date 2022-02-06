@@ -40,9 +40,10 @@ public class PersonController {
 			@RequestParam(defaultValue = "0") Integer pageNo,
 			@RequestParam(defaultValue = "10") Integer pageSize,
 			@RequestParam(defaultValue = "id") String sortBy,
-			@RequestParam(defaultValue = "asc") String sortDir
+			@RequestParam(defaultValue = "asc") String sortDir,
+			@RequestParam(value = "search", required = false) String search
 	) {
-		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir).map(entity -> new PersonDTO(entity));
+		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir, search).map(entity -> new PersonDTO(entity));
 		return ResponseEntity.ok(list);
 	}
 	
