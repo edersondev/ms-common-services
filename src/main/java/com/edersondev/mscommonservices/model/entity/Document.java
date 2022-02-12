@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.edersondev.mscommonservices.dto.document.DocumentCreateDTO;
 import com.edersondev.mscommonservices.model.enums.DocumentType;
 
 @Entity
@@ -32,7 +34,7 @@ public class Document {
 	@Column(nullable = false)
 	private Integer documentType;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_person", nullable = false)
 	private Person person;
 	
@@ -47,6 +49,15 @@ public class Document {
 		this.updatedAt = updatedAt;
 		setDocumentType(documentType);
 		this.person = person;
+	}
+	
+	public Document(DocumentCreateDTO dto) {
+		this.populateObjFromDto(dto);
+	}
+	
+	public void populateObjFromDto(DocumentCreateDTO dto) {
+		number = dto.getNumber();
+		documentType = dto.getDocumentType();
 	}
 
 	public Long getId() {
