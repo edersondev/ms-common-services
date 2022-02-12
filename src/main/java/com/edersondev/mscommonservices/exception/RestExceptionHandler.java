@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.edersondev.mscommonservices.model.controlleradvice.MethodArgumentNotValid;
+import com.edersondev.mscommonservices.service.exception.BusinessRuleException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
@@ -33,6 +34,14 @@ public class RestExceptionHandler {
 	public MethodArgumentNotValid handleDateTimeParseException(DateTimeParseException ex) {
 		MethodArgumentNotValid responseMsg = new MethodArgumentNotValid();
 		responseMsg.setMessage(String.valueOf(ex.getErrorIndex()),ex.getMessage());
+		return responseMsg;
+	}
+	
+	@ExceptionHandler(BusinessRuleException.class)
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	public MethodArgumentNotValid handleBusinessRuleException(BusinessRuleException ex) {
+		MethodArgumentNotValid responseMsg = new MethodArgumentNotValid();
+		responseMsg.setMessage(ex.getFieldName(),ex.getMessage());
 		return responseMsg;
 	}
 }
