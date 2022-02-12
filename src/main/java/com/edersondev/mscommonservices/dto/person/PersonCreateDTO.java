@@ -27,12 +27,16 @@ public class PersonCreateDTO implements Serializable {
 	
 	private Integer gender;
 	
+	@NotBlank
+	private String documentNumber;
+	
 	public PersonCreateDTO() {}
 
-	public PersonCreateDTO(String name, LocalDate birthday, Integer gender) {
+	public PersonCreateDTO(String name, LocalDate birthday, Integer gender, String documentNumber) {
 		this.name = name;
 		this.birthday = birthday;
 		this.gender = gender;
+		this.documentNumber = documentNumber;
 	}
 
 	public String getName() {
@@ -57,6 +61,14 @@ public class PersonCreateDTO implements Serializable {
 
 	public void setGender(Integer gender) {
 		this.gender = gender;
+	}
+
+	public String getDocumentNumber() {
+		return documentNumber;
+	}
+
+	public void setDocumentNumber(String documentNumber) {
+		this.documentNumber = documentNumber;
 	}
 	
 }
