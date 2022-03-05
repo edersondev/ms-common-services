@@ -1,24 +1,15 @@
 package com.edersondev.mscommonservices.model.enums;
 
 public enum DocumentType {
-	CPF(1),RG(2),PASSPORT(3);
+	CPF("Cpf"),RG("Rg"),PASSPORT("Passport");
+
+	private String code;
 	
-	private int code;
-	
-	private DocumentType(int code) {
+	private DocumentType(String code) {
 		this.code = code;
 	}
 	
-	public int getCode() {
+	public String getCode() {
 		return code;
-	}
-	
-	public static DocumentType valueOf(int code) {
-		for(DocumentType value : DocumentType.values()) {
-			if(value.getCode() == code) {
-				return value;
-			}
-		}
-		throw new IllegalArgumentException("Invalid document type");
 	}
 }

@@ -1,27 +1,15 @@
 package com.edersondev.mscommonservices.model.enums;
 
 public enum Gender {
-	MALE(1),FEMALE(2);
+	MALE("M"),FEMALE("F");
 	
-	private int code;
+	private String code;
 	
-	private Gender(Integer code) {
+	private Gender(String code) {
 		this.code = code;
 	}
 	
-	public int getCode() {
+	public String getCode() {
 		return code;
-	}
-	
-	public static Gender valueOf(Integer code) {
-		if(code == null) {
-			return null;
-		}
-		for(Gender value : Gender.values()) {
-			if(value.getCode() == code) {
-				return value;
-			}
-		}
-		return null;
 	}
 }

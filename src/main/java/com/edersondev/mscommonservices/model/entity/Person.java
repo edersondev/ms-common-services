@@ -7,22 +7,32 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-import com.edersondev.mscommonservices.dto.person.PersonCreateDTO;
 import com.edersondev.mscommonservices.model.enums.Gender;
+import com.edersondev.mscommonservices.model.enums.converter.GenderConverter;
 
-@Entity
-@Table(name = "tb_person")
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity(name = "tb_person")
 public class Person {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
 	
 	@Column(nullable = false)
@@ -31,7 +41,9 @@ public class Person {
 	@Column(nullable = false)
 	private LocalDate birthday;
 	
-	private Integer gender;
+	@Convert(converter = GenderConverter.class)
+	@Column(columnDefinition="CHAR(1)")
+	private Gender gender;
 	
 	@OneToMany(mappedBy = "person",cascade = CascadeType.REMOVE)
 	private List<Document> documents = new ArrayList<>();
@@ -40,85 +52,5 @@ public class Person {
 	private Instant createdAt = Instant.now();
 	
 	private Instant updatedAt;
-	
-	public Person() {
-		
-	}
-
-	public Person(Long id, String name, LocalDate birthday, Gender gender, Instant createdAt) {
-		this.id = id;
-		this.name = name;
-		this.birthday = birthday;
-		setGender(gender);
-		this.createdAt = createdAt;
-	}
-	
-	public Person(PersonCreateDTO dto) {
-		this.populateObjFromDto(dto);
-	}
-	
-	public void populateObjFromDto(PersonCreateDTO dto) {
-		setName(dto.getName());
-		setBirthday(dto.getBirthday());
-		setGender(Gender.valueOf(dto.getGender()));
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public LocalDate getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(LocalDate birthday) {
-		this.birthday = birthday;
-	}
-
-	public Gender getGender() {
-		return Gender.valueOf(gender);
-	}
-
-	public void setGender(Gender gender) {
-		if(gender != null) {
-			this.gender = gender.getCode();			
-		}
-	}
-
-	public List<Document> getDocuments() {
-		return documents;
-	}
-
-	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
-	}
-
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Instant getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(Instant updatedAt) {
-		this.updatedAt = updatedAt;
-	}
 	
 }

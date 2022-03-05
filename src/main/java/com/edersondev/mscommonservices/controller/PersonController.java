@@ -5,6 +5,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.edersondev.mscommonservices.dto.person.PersonCreateDTO;
-import com.edersondev.mscommonservices.dto.person.PersonDTO;
+import com.edersondev.mscommonservices.dto.PersonDTO;
 import com.edersondev.mscommonservices.service.PersonService;
 
 @RestController
@@ -32,6 +32,9 @@ import com.edersondev.mscommonservices.service.PersonService;
 @Validated
 public class PersonController {
 
+	@Autowired
+	private ModelMapper mapper;
+	
 	@Autowired
 	private PersonService service;
 	
@@ -43,34 +46,34 @@ public class PersonController {
 			@RequestParam(defaultValue = "asc") String sortDir,
 			@RequestParam(value = "search", required = false) String search
 	) {
-		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir, search).map(entity -> new PersonDTO(entity));
+		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir, search).map(entity -> mapper.map(entity, PersonDTO.class));
 		return ResponseEntity.ok(list);
 	}
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonCreateDTO dto){
-		PersonDTO person = new PersonDTO(service.create(dto));
+	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonDTO dto){
+		PersonDTO person = mapper.map(service.create(dto), PersonDTO.class);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(person.getId()).toUri();
 		return ResponseEntity.created(uri).body(person);
 	}
 	
 	@PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody PersonCreateDTO dto){
+	public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody PersonDTO dto){
 		service.update(id, dto);
 		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<PersonDTO> show(@PathVariable Long id) {
-		PersonDTO person = new PersonDTO(service.show(id));
+	public ResponseEntity<PersonDTO> findById(@PathVariable Long id) {
+		PersonDTO person = mapper.map(service.findById(id), PersonDTO.class);
 		return ResponseEntity.ok().body(person);
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
-	public ResponseEntity<Void> delete(@PathVariable Long id){
-		service.delete(id);
+	public ResponseEntity<Void> deleteById(@PathVariable Long id){
+		service.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -41,12 +41,12 @@ public abstract class AbstractService<Repository extends JpaRepository<Entity,Lo
 		return builder.build();
 	}
 	
-	public Entity show(Long id) {
+	public Entity findById(Long id) {
 		Optional<Entity> entity = repository.findById(id);
 		return entity.orElseThrow(() -> new ResourceNotFoundException());
 	}
 	
-	public void delete(Long id) {
+	public void deleteById(Long id) {
 		try {
 			repository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
