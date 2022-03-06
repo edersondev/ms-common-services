@@ -1,15 +1,22 @@
 package com.edersondev.mscommonservices.model.enums;
 
+import java.util.stream.Stream;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public enum Gender {
-	MALE("M"),FEMALE("F");
+	MALE(1),FEMALE(2);
 	
-	private String code;
+	private Integer code;
 	
-	private Gender(String code) {
-		this.code = code;
-	}
-	
-	public String getCode() {
-		return code;
+	public static Gender of(Integer gender) {
+		return Stream.of(Gender.values())
+				.filter(g -> g.getCode() == gender)
+				.findFirst()
+				.orElse(null);
 	}
 }
