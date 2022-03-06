@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.edersondev.mscommonservices.model.enums.Gender;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -36,7 +35,7 @@ public class PersonDTO implements Serializable {
 	@PastOrPresent
 	private LocalDate birthday;
 	
-	private Gender gender;
+	private Integer gender;
 	
 	@NotNull
 	private String documentNumber;
