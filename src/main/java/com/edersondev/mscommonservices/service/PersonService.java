@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import javax.transaction.Transactional;
 
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import com.edersondev.mscommonservices.dto.DocumentDTO;
 import com.edersondev.mscommonservices.dto.PersonDTO;
 import com.edersondev.mscommonservices.model.entity.Person;
 import com.edersondev.mscommonservices.model.enums.DocumentType;
+import com.edersondev.mscommonservices.model.enums.Gender;
 import com.edersondev.mscommonservices.repository.PersonRepository;
 
 @Service
@@ -25,6 +27,13 @@ public class PersonService extends AbstractService<PersonRepository,Person> {
 	
 	@Transactional
 	public Person create(PersonDTO dto) {
+		
+		Converter<Integer,Gender> genderConverter = ctx -> ctx.getSource() == null ? null : Gender.of(ctx.getSource());
+		mapper.typeMap(PersonDTO.class, Person.class)
+			.addMappings(m -> m.using(genderConverter)
+					.map(PersonDTO::getGender, Person::setGender)
+			);
+		
 		Person person = repository.save(mapper.map(dto, Person.class));
 		
 		DocumentDTO documentDTO = new DocumentDTO();

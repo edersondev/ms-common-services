@@ -5,6 +5,7 @@ import java.net.URI;
 
 import javax.validation.Valid;
 
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.edersondev.mscommonservices.dto.PersonDTO;
+import com.edersondev.mscommonservices.model.entity.Person;
+import com.edersondev.mscommonservices.model.enums.Gender;
 import com.edersondev.mscommonservices.service.PersonService;
 
 @RestController
@@ -52,7 +55,15 @@ public class PersonController {
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonDTO dto){
+		
+		Converter<Gender,Integer> genderConverter = ctx -> ctx.getSource() == null ? null : ctx.getSource().getCode();
+		mapper.typeMap(Person.class, PersonDTO.class)
+			.addMappings(m -> m.using(genderConverter)
+				.map(Person::getGender, PersonDTO::setGender)
+			);
+		
 		PersonDTO person = mapper.map(service.create(dto), PersonDTO.class);
+		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(person.getId()).toUri();
 		return ResponseEntity.created(uri).body(person);
 	}
