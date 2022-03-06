@@ -42,7 +42,7 @@ public class Person {
 	private LocalDate birthday;
 	
 	@Convert(converter = GenderConverter.class)
-	@Column(columnDefinition="CHAR(1)")
+	@Column(columnDefinition="smallint")
 	private Gender gender;
 	
 	@OneToMany(mappedBy = "person",cascade = CascadeType.REMOVE)
