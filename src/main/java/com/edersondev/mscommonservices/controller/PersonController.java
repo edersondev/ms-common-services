@@ -35,6 +35,8 @@ import com.edersondev.mscommonservices.service.PersonService;
 @Validated
 public class PersonController {
 
+	private static final String ID = "/{id}";
+
 	@Autowired
 	private ModelMapper mapper;
 	
@@ -49,42 +51,43 @@ public class PersonController {
 			@RequestParam(defaultValue = "asc") String sortDir,
 			@RequestParam(value = "search", required = false) String search
 	) {
-		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir, search).map(entity -> mapper.map(entity, PersonDTO.class));
+		Page<PersonDTO> list = service.findAll(pageNo, pageSize, sortBy, sortDir, search).map(entity -> mapperPersonToDTO(entity));
 		return ResponseEntity.ok(list);
 	}
 	
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<PersonDTO> create(@Valid @RequestBody PersonDTO dto){
-		
-		Converter<Gender,Integer> genderConverter = ctx -> ctx.getSource() == null ? null : ctx.getSource().getCode();
-		mapper.typeMap(Person.class, PersonDTO.class)
-			.addMappings(m -> m.using(genderConverter)
-				.map(Person::getGender, PersonDTO::setGender)
-			);
-		
-		PersonDTO person = mapper.map(service.create(dto), PersonDTO.class);
-		
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(person.getId()).toUri();
+		PersonDTO person = mapperPersonToDTO(service.create(dto));
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path(ID).buildAndExpand(person.getId()).toUri();
 		return ResponseEntity.created(uri).body(person);
 	}
 	
-	@PutMapping(value = "/{id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = ID,consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> update(@PathVariable Long id, @Valid @RequestBody PersonDTO dto){
 		service.update(id, dto);
 		return ResponseEntity.noContent().build();
 	}
 	
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = ID)
 	public ResponseEntity<PersonDTO> findById(@PathVariable Long id) {
-		PersonDTO person = mapper.map(service.findById(id), PersonDTO.class);
+		PersonDTO person = mapperPersonToDTO(service.findById(id));
 		return ResponseEntity.ok().body(person);
 	}
 	
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping(value = ID)
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> deleteById(@PathVariable Long id){
 		service.deleteById(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	private PersonDTO mapperPersonToDTO(Person person) {
+		Converter<Gender,Integer> genderConverter = ctx -> ctx.getSource() == null ? null : ctx.getSource().getCode();
+		mapper.typeMap(Person.class, PersonDTO.class)
+			.addMappings(m -> m.using(genderConverter)
+				.map(Person::getGender, PersonDTO::setGender)
+			);
+		return mapper.map(person, PersonDTO.class);
 	}
 }
