@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -37,7 +39,7 @@ public class PersonDTO implements Serializable {
 	
 	private Integer gender;
 	
-	@NotNull
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String documentNumber;
 
 }
