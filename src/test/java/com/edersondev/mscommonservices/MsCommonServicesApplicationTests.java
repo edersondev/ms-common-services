@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class MsCommonServicesApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		MsCommonServicesApplication.main(new String[] {});
 	}
 
 }
