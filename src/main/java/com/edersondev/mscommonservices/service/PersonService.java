@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.edersondev.mscommonservices.dto.DocumentDTO;
 import com.edersondev.mscommonservices.dto.PersonDTO;
+import com.edersondev.mscommonservices.model.entity.Document;
 import com.edersondev.mscommonservices.model.entity.Person;
 import com.edersondev.mscommonservices.model.enums.DocumentType;
 import com.edersondev.mscommonservices.model.enums.Gender;
@@ -28,12 +29,15 @@ public class PersonService extends AbstractService<PersonRepository,Person> {
 	@Transactional
 	public Person create(PersonDTO dto) {
 		Person person = repository.save(mapperDtoToPerson(dto));
+		createDocument(dto,person);
+		return person;
+	}
+	
+	private Document createDocument(PersonDTO dto, Person person) {
 		DocumentDTO documentDTO = new DocumentDTO();
 		documentDTO.setNumber(dto.getDocumentNumber());
 		documentDTO.setDocumentType(DocumentType.CPF);
-		
-		documentService.create(documentDTO, person);
-		return person;
+		return documentService.create(documentDTO, person);
 	}
 	
 	public Person update(Long id, PersonDTO dto) {
