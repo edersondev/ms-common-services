@@ -85,7 +85,7 @@ class PersonServiceTest {
 		assertEquals(ID,response.getId());
 		assertEquals(NAME,response.getName());
 		assertEquals(BITHDAY,response.getBirthday());
-		
+		assertEquals(GENDER,response.getGender());
 	}
 
 	@Test
