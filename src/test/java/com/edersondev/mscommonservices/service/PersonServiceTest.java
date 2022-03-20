@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -77,6 +78,10 @@ class PersonServiceTest {
 	@Test
 	void whenCreateThenReturnSuccess() {
 		when(repository.save(any())).thenReturn(person);
+		when(documentRepository.save(any())).thenReturn(document);
+		
+		DocumentService docService = mock(DocumentService.class);
+		when(docService.create(any(), any())).thenReturn(document);
 		
 		Person response = service.create(personDto);
 		
@@ -86,6 +91,21 @@ class PersonServiceTest {
 		assertEquals(NAME,response.getName());
 		assertEquals(BITHDAY,response.getBirthday());
 		assertEquals(GENDER,response.getGender());
+	}
+	
+	@Test
+	void whenCreateDocumentThenReturnSuccess() {
+		when(documentRepository.save(any())).thenReturn(document);
+		
+		DocumentService docService = mock(DocumentService.class);
+		when(docService.create(any(), any())).thenReturn(document);
+		
+		Document response = docService.create(documentDto, person);
+		
+		assertNotNull(response);
+		assertEquals(Document.class, response.getClass());
+		assertEquals(ID, response.getId());
+		assertEquals(DOCUMENT_NUMBER, response.getNumber());
 	}
 
 	@Test
