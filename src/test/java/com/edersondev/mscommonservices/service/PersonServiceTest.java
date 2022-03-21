@@ -1,6 +1,7 @@
 package com.edersondev.mscommonservices.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +30,7 @@ import com.edersondev.mscommonservices.model.enums.DocumentType;
 import com.edersondev.mscommonservices.model.enums.Gender;
 import com.edersondev.mscommonservices.repository.DocumentRepository;
 import com.edersondev.mscommonservices.repository.PersonRepository;
+import com.edersondev.mscommonservices.service.exception.ResourceNotFoundException;
 
 @SpringBootTest
 class PersonServiceTest {
@@ -114,15 +116,51 @@ class PersonServiceTest {
 	@Test
 	void whenUpdateThenReturnSuccess() {
 		when(repository.findById(anyLong())).thenReturn(optionalPerson);
+		
+		person.setGender(null);
 		when(repository.save(any())).thenReturn(person);
-		Person response = service.update(anyLong(), personDto);
+		
+		personDto.setGender(null);
+		Person response = service.update(ID, personDto);
 		
 		assertNotNull(response);
 		assertEquals(Person.class, response.getClass());
 		assertEquals(ID, response.getId());
 		assertEquals(NAME, response.getName());
 		assertEquals(BIRTHDAY, response.getBirthday());
+		assertNull(response.getGender());
+	}
+	
+	@Test
+	void whenUpdateThenReturnResourceNotFoundException() {
+		when(repository.findById(anyLong())).thenThrow(new ResourceNotFoundException());
+		try {
+			service.update(ID, personDto);
+		} catch (Exception ex) {
+			assertEquals(ResourceNotFoundException.class, ex.getClass());
+		}
+	}
+	
+	@Test
+	void whenFindByIdThenReturnSuccess() {
+		when(repository.findById(anyLong())).thenReturn(optionalPerson);
+		Person response = service.findById(ID);
+		
+		assertNotNull(response);
+		assertEquals(ID, response.getId());
+		assertEquals(NAME, response.getName());
+		assertEquals(BIRTHDAY, response.getBirthday());
 		assertEquals(GENDER, response.getGender());
+	}
+	
+	@Test
+	void whenFindByIdThenReturnResourceNotFoundException() {
+		when(repository.findById(anyLong())).thenThrow(new ResourceNotFoundException());
+		try {
+			service.findById(ID);
+		} catch (Exception ex) {
+			assertEquals(ResourceNotFoundException.class, ex.getClass());
+		}
 	}
 
 	@Test
