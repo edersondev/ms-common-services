@@ -4,10 +4,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +43,7 @@ class PersonServiceTest {
 
 	private static final String NAME = "Beltrano Brown";
 
-	private static final LocalDate BITHDAY = LocalDate.now();
+	private static final LocalDate BIRTHDAY = LocalDate.now();
 
 	private static final long ID = 1L;
 
@@ -65,6 +67,7 @@ class PersonServiceTest {
 	
 	private Person person = new Person();
 	private PersonDTO personDto = new PersonDTO();
+	private Optional<Person> optionalPerson;
 	
 	private Document document = new Document();
 	private DocumentDTO documentDto = new DocumentDTO();
@@ -89,7 +92,7 @@ class PersonServiceTest {
 		assertEquals(Person.class, response.getClass());
 		assertEquals(ID,response.getId());
 		assertEquals(NAME,response.getName());
-		assertEquals(BITHDAY,response.getBirthday());
+		assertEquals(BIRTHDAY,response.getBirthday());
 		assertEquals(GENDER,response.getGender());
 	}
 	
@@ -109,8 +112,17 @@ class PersonServiceTest {
 	}
 
 	@Test
-	void testUpdate() {
-		fail("Not yet implemented");
+	void whenUpdateThenReturnSuccess() {
+		when(repository.findById(anyLong())).thenReturn(optionalPerson);
+		when(repository.save(any())).thenReturn(person);
+		Person response = service.update(anyLong(), personDto);
+		
+		assertNotNull(response);
+		assertEquals(Person.class, response.getClass());
+		assertEquals(ID, response.getId());
+		assertEquals(NAME, response.getName());
+		assertEquals(BIRTHDAY, response.getBirthday());
+		assertEquals(GENDER, response.getGender());
 	}
 
 	@Test
@@ -135,13 +147,13 @@ class PersonServiceTest {
 	
 	private void startPerson() {
 		person.setId(ID);
-		person.setBirthday(BITHDAY);
+		person.setBirthday(BIRTHDAY);
 		person.setName(NAME);
 		person.setGender(GENDER);
 		
 		personDto.setId(ID);
 		personDto.setName(NAME);
-		personDto.setBirthday(BITHDAY);
+		personDto.setBirthday(BIRTHDAY);
 		personDto.setGender(GENDER_INT);
 		personDto.setDocumentNumber(DOCUMENT_NUMBER);
 		
@@ -152,6 +164,13 @@ class PersonServiceTest {
 		documentDto.setId(ID);
 		documentDto.setNumber(DOCUMENT_NUMBER);
 		documentDto.setDocumentType(DOCUMENT_TYPE);
+		
+		Person opPerson = new Person();
+		opPerson.setId(ID);
+		opPerson.setBirthday(BIRTHDAY);
+		opPerson.setName(NAME);
+		opPerson.setGender(GENDER);
+		optionalPerson = Optional.of(opPerson);
 		
 	}
 
