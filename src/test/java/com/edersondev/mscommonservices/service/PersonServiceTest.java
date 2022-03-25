@@ -3,10 +3,13 @@ package com.edersondev.mscommonservices.service;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -21,6 +24,7 @@ import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.edersondev.mscommonservices.dto.DocumentDTO;
 import com.edersondev.mscommonservices.dto.PersonDTO;
@@ -164,23 +168,20 @@ class PersonServiceTest {
 	}
 
 	@Test
-	void testFindAll() {
-		fail("Not yet implemented");
+	void whenDeleteByIdThenReturnSuccess() {
+		doNothing().when(repository).deleteById(anyLong());
+		service.deleteById(ID);
+		verify(repository,times(1)).deleteById(anyLong());
 	}
-
+	
 	@Test
-	void testGetSpecification() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testFindById() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testDeleteById() {
-		fail("Not yet implemented");
+	void whenDeleteByIdThenReturnResourceNotFoundException() {
+		doThrow(new EmptyResultDataAccessException(1)).when(repository).deleteById(anyLong());
+		try {
+			service.deleteById(ID);
+		} catch (Exception ex) {
+			assertEquals(ResourceNotFoundException.class, ex.getClass());
+		}
 	}
 	
 	private void startPerson() {
