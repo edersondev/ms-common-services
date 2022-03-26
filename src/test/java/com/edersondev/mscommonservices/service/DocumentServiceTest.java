@@ -2,8 +2,8 @@ package com.edersondev.mscommonservices.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -22,6 +22,7 @@ import com.edersondev.mscommonservices.model.entity.Document;
 import com.edersondev.mscommonservices.model.entity.Person;
 import com.edersondev.mscommonservices.model.enums.DocumentType;
 import com.edersondev.mscommonservices.repository.DocumentRepository;
+import com.edersondev.mscommonservices.service.exception.BusinessRuleException;
 
 @SpringBootTest
 class DocumentServiceTest {
@@ -75,10 +76,15 @@ class DocumentServiceTest {
 	}
 
 	@Test
-	void testCheckExistsByNumber() {
-		fail("Not yet implemented");
+	void whenCreateDocumentThenReturnBusinessRuleException() {
+		when(repository.existsByNumber(anyString())).thenReturn(true);
+		try {
+			service.create(dto, person);
+		} catch (Exception ex) {
+			assertEquals(BusinessRuleException.class, ex.getClass());
+			assertEquals("document number alredy exists", ex.getMessage());
+		}
 	}
-
 	void startDocument() {
 		person = new Person();
 		person.setId(ID);
