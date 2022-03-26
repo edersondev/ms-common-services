@@ -5,11 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -22,9 +18,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.edersondev.mscommonservices.dto.DocumentDTO;
 import com.edersondev.mscommonservices.dto.PersonDTO;
@@ -67,9 +61,6 @@ class PersonServiceTest {
 	
 	@Spy
 	private ModelMapper mapper;
-	
-	@Mock
-	private TypeMap<Integer,Gender> genderTm;
 	
 	private Person person = new Person();
 	private PersonDTO personDto = new PersonDTO();
@@ -140,45 +131,6 @@ class PersonServiceTest {
 		when(repository.findById(anyLong())).thenThrow(new ResourceNotFoundException());
 		try {
 			service.update(ID, personDto);
-		} catch (Exception ex) {
-			assertEquals(ResourceNotFoundException.class, ex.getClass());
-		}
-	}
-	
-	@Test
-	void whenFindByIdThenReturnSuccess() {
-		when(repository.findById(anyLong())).thenReturn(optionalPerson);
-		Person response = service.findById(ID);
-		
-		assertNotNull(response);
-		assertEquals(ID, response.getId());
-		assertEquals(NAME, response.getName());
-		assertEquals(BIRTHDAY, response.getBirthday());
-		assertEquals(GENDER, response.getGender());
-	}
-	
-	@Test
-	void whenFindByIdThenReturnResourceNotFoundException() {
-		when(repository.findById(anyLong())).thenThrow(new ResourceNotFoundException());
-		try {
-			service.findById(ID);
-		} catch (Exception ex) {
-			assertEquals(ResourceNotFoundException.class, ex.getClass());
-		}
-	}
-
-	@Test
-	void whenDeleteByIdThenReturnSuccess() {
-		doNothing().when(repository).deleteById(anyLong());
-		service.deleteById(ID);
-		verify(repository,times(1)).deleteById(anyLong());
-	}
-	
-	@Test
-	void whenDeleteByIdThenReturnResourceNotFoundException() {
-		doThrow(new EmptyResultDataAccessException(1)).when(repository).deleteById(anyLong());
-		try {
-			service.deleteById(ID);
 		} catch (Exception ex) {
 			assertEquals(ResourceNotFoundException.class, ex.getClass());
 		}
