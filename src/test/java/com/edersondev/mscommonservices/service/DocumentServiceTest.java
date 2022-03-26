@@ -64,8 +64,14 @@ class DocumentServiceTest {
 	}
 
 	@Test
-	void testCreate() {
-		fail("Not yet implemented");
+	void whenCreateDocumentThenReturnSuccess() {
+		when(repository.save(any(Document.class))).thenReturn(document);
+		Document response = service.create(dto, person);
+		
+		assertNotNull(response);
+		assertEquals(ID, response.getId());
+		assertEquals(DOC_NUMBER, response.getNumber());
+		assertEquals(TYPE, response.getDocumentType());
 	}
 
 	@Test
